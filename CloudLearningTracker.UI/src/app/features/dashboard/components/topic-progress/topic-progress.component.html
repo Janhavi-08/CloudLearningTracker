@@ -1,0 +1,32 @@
+<div class="panel-card">
+  <div class="panel-title-row">
+    <div class="panel-title">Topic Progress</div>
+    <span class="panel-pill">Live</span>
+  </div>
+  <div class="topic-list" *ngIf="topics.length; else empty">
+    <button class="topic-item" *ngFor="let topic of topics" type="button" [class.active]="selectedTopicName === topic.topicName" (click)="selectTopic(topic.topicName)">
+      <div class="topic-header">
+        <span class="topic-span">{{ topic.topicName }}</span>
+        <span>{{ topic.completionPercentage }}%</span>
+      </div>
+      <div class="meta-row">
+        <span>{{ topic.completedTasks }} / {{ topic.totalTasks }} completed</span>
+      </div>
+      <mat-progress-bar mode="determinate" [value]="topic.completionPercentage"></mat-progress-bar>
+      <div class="subtopic-panel" *ngIf="expandedTopicName === topic.topicName">
+        <div class="subtopic-item" *ngFor="let subTopic of topic.subTopics ?? []">
+          <div class="subtopic-row">
+            <span>{{ subTopic.subTopicName }}</span>
+            <strong>{{ subTopic.completionPercentage }}%</strong>
+          </div>
+          <div class="meta-row" *ngIf="subTopic.hasNoTasks">This subtopic does not have a task yet</div>
+
+          <div class="meta-row" *ngIf="!subTopic.hasNoTasks">{{ subTopic.completedTasks }} / {{ subTopic.totalTasks }} completed</div>
+        </div>
+      </div>
+    </button>
+  </div>
+  <ng-template #empty>
+    <p class="empty-state">No topic progress data yet.</p>
+  </ng-template>
+</div>

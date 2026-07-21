@@ -1,0 +1,109 @@
+<div class="management-section">
+  <div class="management-toolbar">
+    <div class="toolbar-group">
+      <label>Topics:</label>
+      <select [ngModel]="selectedTopicId" (ngModelChange)="selectTopic($event)" class="topic-select">
+        <option [ngValue]="null" disabled>Select a topic</option>
+        <option *ngFor="let topic of topics" [ngValue]="topic.topicId">{{ topic.topicName }}</option>
+      </select>
+      <button (click)="openTopicModal()" class="btn-action">+ Add Topic</button>
+    </div>
+
+    <div class="toolbar-group" *ngIf="selectedTopicId">
+      <label>Subtopics:</label>
+      <select [(ngModel)]="selectedSubTopicId" (ngModelChange)="selectSubTopic($event)" class="subtopic-select">
+        <option [ngValue]="null" disabled>Select a subtopic</option>
+        <option *ngFor="let subtopic of subtopics" [ngValue]="subtopic.subTopicId">{{ subtopic.subTopicName }}</option>
+      </select>
+      <button (click)="openSubTopicModal()" class="btn-action">+ Add Subtopic</button>
+    </div>
+
+    <div class="toolbar-group" *ngIf="selectedSubTopicId">
+      <button (click)="openTaskModal()" class="btn-action">+ Add Task</button>
+      <button (click)="openNoteModal()" class="btn-action">+ Add Note</button>
+    </div>
+  </div>
+
+  <div class="topic-cards" *ngIf="topics.length">
+    <div class="card-item" *ngFor="let topic of topics">
+      <strong>{{ topic.topicName }}</strong>
+      <p class="card-desc" [innerHTML]="getSafeHtml(topic.description)"></p>
+      <div class="card-actions">
+        <button (click)="selectTopic(topic.topicId)" class="btn-small">Open</button>
+        <button (click)="openTopicModal(topic)" class="btn-small">Edit</button>
+        <button (click)="deleteTopic(topic.topicId)" class="btn-small danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="subtopic-cards" *ngIf="selectedTopicId && subtopics.length">
+    <div class="card-item" *ngFor="let subtopic of subtopics" (click)="selectSubTopic(subtopic.subTopicId)" style="cursor: pointer;">
+      <strong>{{ subtopic.subTopicName }}</strong>
+      <p class="card-desc" [innerHTML]="getSafeHtml(subtopic.description)"></p>
+      <div class="card-actions">
+        <button type="button" (click)="selectSubTopic(subtopic.subTopicId); $event.stopPropagation()" class="btn-small">Open</button>
+        <button type="button" (click)="openSubTopicModal(subtopic); $event.stopPropagation()" class="btn-small">Edit</button>
+        <button type="button" (click)="deleteSubTopic(subtopic.subTopicId); $event.stopPropagation()" class="btn-small danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic Modal -->
+  <div class="modal" *ngIf="showTopicModal">
+    <div class="modal-content modal-content--topic">
+      <h2>{{ topicForm.topicId ? 'Edit Topic' : 'Add Topic' }}</h2>
+      <input [(ngModel)]="topicForm.topicName" placeholder="Topic name" required />
+      <textarea [(ngModel)]="topicForm.description" rows="3" placeholder="Description"></textarea>
+      <div class="modal-actions">
+        <button (click)="saveTopic()" class="btn-primary">Save</button>
+        <button (click)="showTopicModal = false" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+    <div class="modal-overlay" (click)="showTopicModal = false"></div>
+  </div>
+
+  <!-- SubTopic Modal -->
+  <div class="modal" *ngIf="showSubTopicModal">
+    <div class="modal-content modal-content--subtopic">
+      <h2>{{ subTopicForm.subTopicId ? 'Edit Subtopic' : 'Add Subtopic' }}</h2>
+      <input [(ngModel)]="subTopicForm.subTopicName" placeholder="Subtopic name" required />
+      <textarea [(ngModel)]="subTopicForm.description" rows="3" placeholder="Description"></textarea>
+      <div class="modal-actions">
+        <button (click)="saveSubTopic()" class="btn-primary">Save</button>
+        <button (click)="showSubTopicModal = false" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+    <div class="modal-overlay" (click)="showSubTopicModal = false"></div>
+  </div>
+
+  <!-- Task Modal -->
+  <div class="modal" *ngIf="showTaskModal">
+    <div class="modal-content modal-content--task">
+      <h2>{{ taskForm.taskId ? 'Edit Task' : 'Add Task' }}</h2>
+      <input [(ngModel)]="taskForm.taskTitle" placeholder="Task title" required />
+      <textarea [(ngModel)]="taskForm.description" rows="3" placeholder="Task description"></textarea>
+      <input [(ngModel)]="taskForm.resourceURL" placeholder="Resource URL" type="url" />
+      <input [(ngModel)]="taskForm.dueDate" type="date" />
+      <div class="modal-actions">
+        <button (click)="saveTask()" class="btn-primary">Save</button>
+        <button (click)="showTaskModal = false" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+    <div class="modal-overlay" (click)="showTaskModal = false"></div>
+  </div>
+
+  <!-- Note Modal -->
+  <div class="modal" *ngIf="showNoteModal">
+    <div class="modal-content modal-content--note">
+      <h2>{{ noteForm.noteId ? 'Edit Note' : 'Add Note' }}</h2>
+      <input [(ngModel)]="noteForm.noteTitle" placeholder="Note title" required />
+      <textarea [(ngModel)]="noteForm.content" rows="4" placeholder="Note content" required></textarea>
+      <input [(ngModel)]="noteForm.resourceURL" placeholder="Resource URL" type="url" />
+      <div class="modal-actions">
+        <button (click)="saveNote()" class="btn-primary">Save</button>
+        <button (click)="showNoteModal = false" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+    <div class="modal-overlay" (click)="showNoteModal = false"></div>
+  </div>
+</div>

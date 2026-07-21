@@ -1,0 +1,54 @@
+<div class="panel-card">
+  <div class="panel-title-row">
+    <div class="panel-title">Current Focus</div>
+    <span class="panel-pill">Next up</span>
+  </div>
+  <div class="topic-select-row">
+    <label class="select-label" for="focus-topic">Topic</label>
+    <select id="focus-topic" class="topic-select" [(ngModel)]="selectedTopicControl" (change)="onTopicChange()">
+      <option [ngValue]="null">All topics</option>
+      <option *ngFor="let topic of topics" [ngValue]="topic.topicName">{{ topic.topicName }}</option>
+    </select>
+  </div>
+  <div class="focus-block" *ngIf="focus; else empty">
+    <div class="focus-pill">{{ focus.statusLabel }}</div>
+
+    <div class="section-block">
+      <p class="label">Current Topic</p>
+      <h3>{{ focus.topicName }}</h3>
+    </div>
+
+    <div class="section-block">
+      <p class="label">Current SubTopic</p>
+      <h3 class="value-text subtopic-value">{{ focus.subTopicName }}</h3>
+    </div>
+
+    <div class="section-block">
+      <p class="label">Next Task</p>
+      <h3>{{ focus.nextActions[0] || 'No upcoming task' }}</h3>
+    </div>
+
+    <div class="meta-list">
+      <div class="meta-item">
+        <span>Due</span>
+        <strong>{{ focus.dueDate ? (focus.dueDate | date:'MMM d, y') : 'No due date' }}</strong>
+      </div>
+      <div class="meta-item">
+        <span>Status</span>
+        <strong>{{ focus.statusLabel }}</strong>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <p class="label">Progress</p>
+      <div class="progress-row">
+        <span>{{ focus.completedTasks }} / {{ focus.totalTasks }} tasks completed</span>
+        <strong>{{ focus.completionPercentage }}%</strong>
+      </div>
+      <mat-progress-bar mode="determinate" [value]="focus.completionPercentage"></mat-progress-bar>
+    </div>
+  </div>
+  <ng-template #empty>
+    <p class="empty-state">Add your first task to create a focus plan.</p>
+  </ng-template>
+</div>

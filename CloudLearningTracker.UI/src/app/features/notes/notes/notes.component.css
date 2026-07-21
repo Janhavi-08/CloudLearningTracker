@@ -1,0 +1,344 @@
+.notes-shell {
+  padding: clamp(12px, 2vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: calc(100dvh - 90px);
+  overflow: hidden;
+  width: 100%;
+}
+
+.notes-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  border-radius: 22px;
+  background: rgba(8,18,35,.92);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 12px 28px rgba(2,8,23,.24);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.eyebrow { text-transform: uppercase; letter-spacing: 0.24em; font-size: 0.72rem; color: #79b8ff; margin: 0 0 8px; }
+.notes-toolbar h1 { margin: 0; color: #f8fafc; font-size: clamp(1.2rem, 2vw, 1.6rem); }
+.notes-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: rgba(8,18,35,.92);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  padding: 14px 16px;
+  flex-shrink: 0;
+    margin-top: 16px;
+}
+
+::ng-deep .mat-mdc-form-field-subscript-wrapper{
+  display: none;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.error-text {
+  color: #ef4444; /* Clean Red accent */
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.search-field, .filter-field { flex: 1 1 220px; min-width: min(100%, 220px); }
+.search-field input{
+  border: none;
+  box-shadow: none;
+}
+::ng-deep .cdk-overlay-pane .mat-mdc-select-panel {
+  border: 1px solid rgba(148, 163, 184, 0.25) !important;
+  border-radius: 10px !important;
+  background: rgb(15, 23, 42) !important; 
+}
+
+::ng-deep .cdk-overlay-pane .mat-mdc-option {
+  color: #f8fafc !important;
+  background: transparent !important;
+}
+
+::ng-deep .cdk-overlay-pane .mat-mdc-option:hover,
+::ng-deep .cdk-overlay-pane .mat-mdc-option.mdc-list-item--selected {
+  background: rgba(148, 163, 184, 0.15) !important;
+}
+
+::ng-deep .mat-mdc-form-field-icon-suffix {
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep .mat-mdc-select-panel::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+::ng-deep .mat-mdc-select-panel::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35) !important;
+  border-radius: 999px !important;
+}
+
+::ng-deep .mat-mdc-select-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.55) !important;
+}
+
+::ng-deep .mat-mdc-select-panel::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+::ng-deep .mat-mdc-form-field-icon-suffix button {
+  color: #94a3b8;
+}
+.secondary-btn, .primary-btn{
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  width: 130px;
+  font-weight: bold;
+  margin: 5px;
+}
+
+.primary-btn {
+  background: linear-gradient(90deg, #38bdf8, #818cf8);
+  color: #fff;
+}
+
+.secondary-btn {
+  background: rgba(148, 163, 184, 0.16);
+  color: #f8fafc;
+}
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 8, 23, 0.689);
+  z-index: 1000;
+}
+.note-form-card { background: rgba(8,18,35,.88); 
+  border: 1px solid rgba(255,255,255,.08); border-radius: 20px; padding: 20px;
+   box-shadow: 0 10px 24px rgba(2,8,23,.2); 
+    position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.96));
+  width: min(760px, 92vw);
+  max-height: min(88dvh, 760px);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: #f8fafc;}
+
+.full-width { width: 100%; }
+.compact-meta-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.compact-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  overflow-y: auto;
+  padding-right: 4px;
+  min-height: 0;
+}
+
+.notes-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notes-grid::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+}
+.option-label { display: block; }
+.subtopic-label { color: #79b8ff; font-size: 0.9rem; }
+.subtopic-option { padding-left: 18px; }
+.note-card { padding: 16px; 
+  max-height: 100px;
+  background: rgba(8,18,35,.9); max-height: 154px; overflow: hidden;
+   border: 1px solid rgba(255,255,255,.08); border-radius: 18px;
+    box-shadow: 0 10px 24px rgba(2,8,23,.16); transition: transform 180ms ease, border-color 180ms ease; }
+.note-card.interactive { cursor: pointer; }
+.note-card:hover { transform: translateY(-2px); border-color: rgba(56,189,248,.4); }
+.note-view-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(2,8,23,.35);
+  width: min(760px, 92vw);
+  max-height: 85dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #f8fafc;
+}
+.note-view-header {
+  position: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.note-view-header h2 {
+  margin: 0;
+  color: #f8fafc;
+}
+.note-view-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 20px 20px;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
+.note-view-content::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.note-view-content::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+}
+
+.note-view-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.55);
+}
+
+.note-view-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.note-view-body {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  color: #cbd5e1;
+  overflow-wrap: anywhere;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
+.note-view-body::-webkit-scrollbar,
+textarea::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.note-view-body::-webkit-scrollbar-thumb,
+textarea::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+}
+
+.note-view-body::-webkit-scrollbar-thumb:hover,
+textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.55);
+}
+
+.note-view-body::-webkit-scrollbar-track,
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+textarea {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+.note-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.note-card h3 { margin: 0 0 8px; color: #f8fafc; }
+.note-card p { color: #8da0bc; }
+.note-content-preview {flex-wrap: nowrap;   
+ white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; }
+
+@media (max-width: 900px) {
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .notes-shell {
+    min-height: auto;
+    padding: 10px;
+  }
+
+  .notes-toolbar {
+    padding: 16px;
+  }
+
+  .notes-controls {
+    padding: 12px;
+  }
+
+  .compact-meta-row {
+    flex-direction: column;
+  }
+
+  .secondary-btn, .primary-btn {
+    width: 100%;
+    margin: 4px 0;
+  }
+
+  .note-form-card,
+  .note-view-modal {
+    width: min(96vw, 760px);
+  }
+}
+.note-meta { color: #79b8ff; margin-top: 12px; font-size: 0.9rem; }
+.actions { display: flex; gap: 6px; }
+.actions button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #9aa5b5; /* Soft gray color from your image */
+  font-size: 1.5rem;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 150ms ease;
+}
+.actions button:hover{
+  color: #79b8ff;
+}
+.empty-state { padding: 24px; text-align: center; color: #8da0bc; background: rgba(8,18,35,.86); border-radius: 18px; border: 1px dashed rgba(255,255,255,.12); }
+@media (max-width: 900px) { .notes-grid { grid-template-columns: 1fr; } }

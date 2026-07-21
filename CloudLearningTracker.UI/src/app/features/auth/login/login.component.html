@@ -1,0 +1,45 @@
+<div class="auth-shell">
+  <mat-card class="auth-card">
+    <div class="auth-heading">
+      <p class="eyebrow">Cloud Learning Tracker</p>
+      <h1>Welcome back</h1>
+      <p class="subtitle">Track your cloud learning journey in one place.</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" />
+        <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email is required.</mat-error>
+        <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Enter a valid email.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" [type]="hide ? 'password' : 'text'"
+         placeholder="Password">
+        
+        <button 
+          mat-icon-button 
+          matSuffix 
+          (click)="toggleVisibility($event)" 
+          [attr.aria-label]="hide ? 'Hide password' : 'Show password'"
+          [attr.aria-pressed]="!hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+
+        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required.</mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="full-width-btn" type="submit" [disabled]="isSubmitting || loginForm.invalid">
+        <span *ngIf="!isSubmitting">Login</span>
+        <span *ngIf="isSubmitting" class="loading-text">Signing in...</span>
+      </button>
+    </form>
+
+    <p class="signup-link">
+      Don’t have an account?
+      <a routerLink="/signup">Create one</a>
+    </p>
+  </mat-card>
+</div>

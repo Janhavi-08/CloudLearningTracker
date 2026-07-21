@@ -1,0 +1,17 @@
+<div class="dashboard-shell">
+  <div class="dashboard-Progress">
+    <app-stats-cards />
+  </div>
+  <div class="dashboard-main">
+    <div class="left-section">
+      <app-topic-progress (topicSelected)="selectedTopicName = $event" />
+    </div>
+    <div class="center-section">
+      <app-kanban-board />
+    </div>
+    <div class="right-section">
+      <app-current-focus [selectedTopicName]="selectedTopicName" />
+    </div>
+  </div>
+  <app-recent-activity />
+</div>

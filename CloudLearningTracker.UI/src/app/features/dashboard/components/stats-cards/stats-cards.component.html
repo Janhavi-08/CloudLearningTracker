@@ -1,0 +1,264 @@
+<div class="stats-grid" *ngIf="progress; else loading">
+    <div class="welcome-card">
+      <div class="welcome-text">
+        <p class="eyebrow">Cloud Learning Dashboard</p>
+        <h1>Welcome back 👋</h1>
+        <p class="welcome-copy">Continue your cloud learning journey with a clear view of your next milestone.</p>
+
+        <div class="welcome-summary-row">
+          <div class="welcome-metrics">
+            <div class="welcome-metric">
+              <span class="welcome-metric-label">Topics</span>
+              <strong>{{ topics.length }}</strong>
+            </div>
+            <div class="welcome-metric">
+              <span class="welcome-metric-label">Subtopics</span>
+              <strong>{{ totalSubtopics }}</strong>
+            </div>
+            <div class="welcome-metric">
+              <span class="welcome-metric-label">Tasks</span>
+              <strong>{{ totalTasks }}</strong>
+            </div>
+            <div class="welcome-metric">
+              <span class="welcome-metric-label">Notes</span>
+              <strong>{{ totalNotes }}</strong>
+            </div>
+              
+          </div>
+<button class="welcome-quick-panel welcome-label-pill" type="button" (click)="openManageModal()">
+            <span class="welcome-quick-label">Manage Topics</span>
+          </button>
+        
+        </div>
+
+        <div class="welcome-progress">
+          <div class="welcome-progress-meta">
+            <span class="welcome-progress-title">Overall progress</span>
+            <span class="welcome-progress-value">{{ progress?.completionPercentage ?? 0 }}%</span>
+          </div>
+          <div class="welcome-progress-bar">
+            <div class="welcome-progress-fill" [style.width.%]="progress?.completionPercentage ?? 0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-checklist-card/>
+    <app-due-tasks />
+</div>
+
+<div class="modal-backdrop" *ngIf="showTopicModal || showSubtopicListModal || showManageModal || showSubtopicModal || showAddSubtopicModal" (click)="closeAllStatsModals()"></div>
+<div class="modal-panel manage-modal" *ngIf="showManageModal">
+  <div class="modal-header">
+    <h1>Manage Topics</h1>
+    <button class="close-btn" type="button" (click)="showManageModal = false; clearSearch()">
+      <span>Close</span>   
+    </button>
+  </div>
+  <div class="topic-manager">
+    <div class="modal-actions" style="margin: 8px 0 12px;">
+      <button class="main-btn" type="button" (click)="showManageModal = false; openTopicModal()">Add Topic</button>
+      <button class="main-btn" type="button" (click)="showManageModal = false; openSubtopicModal()">Add SubTopic</button>
+    </div>
+     <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (ngModelChange)="loadTopics()" />
+      <button *ngIf="searchTerm" mat-icon-button matSuffix type="button" aria-label="Clear search" (click)="clearSearch()">
+        ✕
+      </button>
+    </mat-form-field>
+
+    <div class="topic-list" *ngIf="filteredTopics.length; else noTopics">
+      
+    <mat-card class="topic-card" *ngFor="let topic of filteredTopics" type="button" (click)="showManageModal = false;showSubtopicListModal=true;selectTopic(topic.topicId)"  [class.active]="selectedTopicId === topic.topicId" >
+      <div class="topic-card-header">
+
+         <div class="header-text-group">
+      <h3>{{ topic.topicName }}</h3>
+      <p>{{ topic.description }}</p>
+    </div>
+    
+    <div class="actions" (click)="$event.stopPropagation()">
+      <button mat-icon-button color="primary" (click)=" showManageModal = false; openTopicModal(topic)">✎</button>
+      <button mat-icon-button color="warn" (click)="deleteTopic(topic.topicId)">🗑</button>
+    </div>
+  </div>
+
+      <div class="topic-meta">{{'view details'}}</div>
+    </mat-card>
+
+    </div>
+  </div>
+  <ng-template #noTopics>
+        <p class="modal-copy">No {{searchTerm == "" ? "topics yet. Create one to get started." : searchTerm +" found."}} </p>
+
+  </ng-template>
+</div>
+
+<div class="subtopic-modal-panel" *ngIf="showSubtopicListModal">
+  <div class="modal-header">
+    <div class="header-text-group">
+    <h1>Topic: {{ selectedTopic.topicName }}</h1>
+      <p>Description: {{ selectedTopic.description }}</p>
+    </div>
+    <button class="close-btn" type="button" (click)="showSubtopicListModal=false; showManageModal = true; clearSubTopicSearch()">
+      <span>Back</span>   
+    </button>
+
+  </div>
+
+    <div class="modal-actions" style="margin: 8px 0 12px;">
+      <button class="main-btn" type="button" (click)="showSubtopicListModal=false; openAddSubtopicModal()">Add SubTopic</button>
+    </div>
+
+     <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search</mat-label>
+      <input matInput [(ngModel)]="subTopicSearechTerm" (ngModelChange)="loadSubTopics()" />
+      <button *ngIf="subTopicSearechTerm" mat-icon-button matSuffix type="button" aria-label="Clear search" (click)="clearSubTopicSearch()">
+        ✕
+      </button>
+    </mat-form-field>
+
+    <div class="subtopic-list" *ngIf="filteredSubTopics.length; else noSerchSubTopics">
+      <mat-card class="subtopic-card" *ngFor="let subtopic of filteredSubTopics" type="button" (click)="selectSubtopic(subtopic)" [class.active]="selectedSubTopicId === subtopic.subTopicId">
+        <div class="subtopic-card-header">
+          <div class="header-text-group">
+            <h3>{{ subtopic.subTopicName }}</h3>
+            <p>{{ subtopic.description }}</p>
+          </div>
+
+          <div class="actions" (click)="$event.stopPropagation()">
+            <button mat-icon-button color="primary" (click)="showSubtopicListModal=false; openAddSubtopicModal(subtopic)">✎</button>
+            <button mat-icon-button color="warn" (click)="deleteSubtopic(subtopic.subTopicId)">🗑</button>
+          </div>
+        </div>
+
+        <div class="subtopic-detail-panel" *ngIf="selectedSubTopicId === subtopic.subTopicId">
+          <div class="detail-section">
+            <div class="detail-section-header">
+              <h4>Tasks</h4>
+              <button class="tiny-btn" type="button" (click)="openItemForm(subtopic, 'task')">+ Add Task</button>
+            </div>
+            <div class="detail-section-body" *ngIf="tasks.length; else noTasks">
+              <div class="detail-card" *ngFor="let task of tasks">
+                <strong>{{ task.taskTitle }}</strong>
+                <p>{{ task.description }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-header">
+              <h4>Notes</h4>
+              <button class="tiny-btn" type="button" (click)="openItemForm(subtopic, 'note')">+ Add Note</button>
+            </div>
+            <div class="detail-section-body" *ngIf="notes.length; else noNotes">
+              <div class="detail-card" *ngFor="let note of notes">
+                <strong>{{ note.noteTitle }}</strong>
+                <p>{{ note.content }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+</div>
+
+ <ng-template #noSubTopics>
+    <p class="modal-copy">No Subtopics yet. Create one to get started.</p>
+  </ng-template>
+   <ng-template #noSerchSubTopics>
+    <p class="modal-copy">No {{subTopicSearechTerm == "" ? "Subtopics yet. Create one to get started." : subTopicSearechTerm +" found."}} </p>
+  </ng-template>
+  <ng-template #noTasks>
+    <div class="detail-empty">No tasks yet for this subtopic.</div>
+  </ng-template>
+  <ng-template #noNotes>
+    <div class="detail-empty">No notes yet for this subtopic.</div>
+  </ng-template>
+
+<div class="modal-panel" *ngIf="showTaskFormModal">
+  <h3>Create Task</h3>
+
+    <div class="form-group">
+  <input [(ngModel)]="taskDraft.taskTitle" placeholder="Task title" #taskTitle="ngModel" required />
+   <span class="error-text" *ngIf="taskTitle.touched && (!taskDraft.taskTitle || !taskDraft.taskTitle.trim())">
+      Task title is required
+    </span>
+  </div>
+  <textarea [(ngModel)]="taskDraft.description" rows="4" placeholder="Description"></textarea>
+  <input [(ngModel)]="taskDraft.resourceURL" placeholder="Resource URL" type="url" />
+  <input [(ngModel)]="taskDraft.dueDate" type="date" />
+  <div class="modal-actions">
+    <button class="primary-btn" type="button" (click)="saveTaskFromForm()" [disabled]="isSaving">{{ isSaving ? 'Saving...' : 'Save Task' }}</button>
+    <button class="secondary-btn" type="button" (click)="cancelItemForm()">Cancel</button>
+  </div>
+</div>
+
+<div class="modal-panel" *ngIf="showNoteFormModal">
+  <h3>Create Note</h3>
+
+    <div class="form-group">
+  <input [(ngModel)]="noteDraft.noteTitle" placeholder="Note title" #noteTitle="ngModel" required />
+   <span class="error-text" *ngIf="noteTitle.touched && (!noteDraft.noteTitle || !noteDraft.noteTitle.trim())">
+      Note title is required
+    </span>
+  </div>
+  <textarea [(ngModel)]="noteDraft.content" rows="6" placeholder="Content" required></textarea>
+  <div class="modal-actions">
+    <button class="primary-btn" type="button" (click)="saveNoteFromForm()" [disabled]="isSaving">{{ isSaving ? 'Saving...' : 'Save Note' }}</button>
+    <button class="secondary-btn" type="button" (click)="cancelItemForm()">Cancel</button>
+  </div>
+</div>
+
+<div class="modal-panel" *ngIf="showTopicModal">
+  <h3>{{ topicForm.topicId ? 'Edit Topic' : 'Add Topic' }}</h3>
+  <div class="form-group">
+  <input [(ngModel)]="topicForm.topicName" placeholder="Topic name" #nameRef="ngModel" required />
+ <span class="error-text" *ngIf="nameRef.touched && (!topicForm.topicName || !topicForm.topicName.trim())">
+      Topic name is required
+    </span>
+</div>
+  <textarea [(ngModel)]="topicForm.description" rows="5" placeholder="Description"></textarea>
+  <div class="modal-actions">
+    <button class="primary-btn" type="button" (click)="saveTopic()" [disabled]="isSaving">{{ isSaving ? 'Saving...' : 'Save' }}</button>
+    <button class="secondary-btn" type="button" (click)="closeTopicModal(); showManageModal=true; ">Cancel</button>
+  </div>
+</div>
+
+<div class="modal-panel" *ngIf="showSubtopicModal">
+  <h3>{{ subtopicForm.subTopicId ? 'Edit Subtopic' : 'Add Subtopic' }}</h3>
+<select id="topic" class="topic-dropdown" [(ngModel)]="topicForSubreport">
+  <option [ngValue]="null">Select a Topic</option>
+  <ng-container *ngFor="let topic of topics">
+    <option [value]="topic.topicId">
+      {{ topic.topicName }}
+    </option>
+  </ng-container>
+</select>
+
+  <input [(ngModel)]="subtopicForm.subTopicName" placeholder="Subtopic name" />
+  <textarea [(ngModel)]="subtopicForm.description" rows="5" placeholder="Description"></textarea>
+  <div class="modal-actions">
+    <button class="primary-btn" type="button" (click)="saveSubtopic()" [disabled]="isSaving">{{ isSaving ? 'Saving...' : 'Save' }}</button>
+    <button class="secondary-btn" type="button" (click)="topicForSubreport=null; closeSubtopicModal(); showManageModal=true">Cancel</button>
+  </div>
+</div>
+<div class="modal-panel" *ngIf="showAddSubtopicModal">
+  <h3>{{ subtopicForm.subTopicId ? 'Edit Subtopic' : 'Add Subtopic' }}</h3>
+  <h3>Topic: {{ selectedTopic.topicName }}</h3>
+  <div class="form-group">
+  <input [(ngModel)]="subtopicForm.subTopicName" placeholder="Subtopic name" #subname="ngModel" required />
+   <span class="error-text" *ngIf="subname.touched && (!subtopicForm.subTopicName || !subtopicForm.subTopicName.trim())">
+      subTopic Name is required
+    </span>
+  </div>
+  <input [(ngModel)]="subtopicForm.subTopicName" placeholder="Subtopic name" />
+  <textarea [(ngModel)]="subtopicForm.description" rows="5" placeholder="Description"></textarea>
+  <div class="modal-actions">
+    <button class="primary-btn" type="button" (click)="saveSubtopic()" [disabled]="isSaving">{{ isSaving ? 'Saving...' : 'Save' }}</button>
+    <button class="secondary-btn" type="button" (click)="closeAddSubtopicModal(); showSubtopicListModal=true">Cancel</button>
+  </div>
+</div>
+<ng-template #loading>
+  <div class="stat-card loading-card">Loading progress...</div>
+</ng-template>

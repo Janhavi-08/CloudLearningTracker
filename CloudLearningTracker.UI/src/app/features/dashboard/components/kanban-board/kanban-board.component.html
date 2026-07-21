@@ -1,0 +1,227 @@
+<div class="panel-card">
+  <div class="panel-title-row">
+    <div class="panel-title-with-controls">
+      <div>
+        <div class="panel-title">Kanban Board</div>
+        <div class="panel-subtitle">Drag cards to update task progress</div>
+      </div>
+      <div class="kanban-toolbar">
+        <div class="search-box">
+          <span class="toolbar-icon">🔎</span>
+          <input class="search-box-txt" type="text" [(ngModel)]="searchTerm" placeholder="Search tasks" />
+        </div>
+        <div class="filter-wrapper">
+          <button class="toolbar-btn" type="button" (click)="toggleFilterMenu($event)" title="Filter">
+            <span class="toolbar-icon">⚙️</span>
+          </button>
+          <div class="filter-menu" *ngIf="showFilterMenu" (click)="$event.stopPropagation()">
+            <label>
+              Topic
+              <select [(ngModel)]="tempTopicFilter" (change)="onTopicFilterChange()">
+                <option [ngValue]="null">All topics</option>
+                <option *ngFor="let topic of topics" [ngValue]="topic.topicId">{{ topic.topicName }}</option>
+              </select>
+            </label>
+            <label>
+              Subtopic
+              <select [(ngModel)]="tempSubtopicFilter" [disabled]="!tempTopicFilter && !subtopics.length">
+                <option [ngValue]="null">All subtopics</option>
+                <option *ngFor="let subtopic of getVisibleSubtopics()" [ngValue]="subtopic.subTopicId">{{ subtopic.subTopicName }}</option>
+              </select>
+            </label>
+            <div class="filter-actions">
+              <button class="toolbar-btn secondary" type="button" (click)="clearFilters()">Clear</button>
+              <button class="toolbar-btn" type="button" (click)="applyFilters()">Apply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="top-right-corner-wrapper">
+      <!-- Interactive Progress Trigger Group -->
+      <div class="progress-dropdown-trigger" (click)="toggleProgressMenu($event)">
+    
+    <!-- Compact Circular Progress Component with internal percentage value -->
+    <div class="circular-progress" [style.--progress-percentage]="getPercentage()">
+      <svg class="progress-svg" viewBox="0 0 100 100">
+        <circle class="bg-circle" cx="50" cy="50" r="42"></circle>
+        <circle class="fg-circle" cx="50" cy="50" r="42"></circle>
+      </svg>
+      <div class="progress-percentage-center">
+        {{ getPercentage() }}%
+      </div>
+    </div>
+    
+    <!-- Clickable text label block with dropdown caret indicator arrow -->
+    <span class="progress-label-text">
+      Your progress <span class="caret-arrow">&#65087;</span>
+    </span>
+
+    <!-- The Floating Dropdown Menu Card Container (Controlled dynamically by Angular toggles) -->
+    <div class="progress-floating-card" *ngIf="isProgressMenuOpen" (click)="$event.stopPropagation()">
+      <div class="card-arrow-tip"></div>
+      <h3>{{ progress?.completedTasks ?? 0 }} of {{ progress?.totalTasks ?? 0 }} complete.</h3>
+      <p>Finish tasks to complete your topic track</p>
+    </div>
+
+  </div>
+
+  <!-- Your existing primary button layout asset -->
+  <button class="icon-btn" type="button" (click)="openCreateModal()">+ Task</button>
+
+</div>
+
+  </div>
+  <div class="board" cdkDropListGroup>
+    <div class="column" *ngFor="let column of columns" [ngClass]="'column-' + column.key">
+      <div class="column-title-row">
+        <div class="column-title-wrap">
+          <div class="column-title">{{ column.title }}</div>
+          <button class="sort-btn" type="button" (click)="toggleSort(column.key)">
+            <span class="sort-arrow">{{ getSortArrow(column.key) }}</span>
+          </button>
+        </div>
+        <span class="column-count">{{ getColumnCount(column.key) }}</span>
+      </div>
+      <div
+        class="drop-list"
+        [id]="column.key"
+        cdkDropList
+        [cdkDropListData]="getColumnTasks(column.key)"
+        (cdkDropListDropped)="drop($event)">
+        <div class="task-card" *ngFor="let task of getColumnTasks(column.key)" cdkDrag (click)="openTask(task)">
+          <div class="task-title-row">
+            <strong>{{ task.taskTitle }}</strong>
+            <span class="task-chip">{{ task.taskStatus }}</span>
+          </div>
+
+          <div class="task-card-body">
+            <div class="task-description" *ngIf="task.description; else noTaskDescription">
+              {{ task.description }}
+            </div>
+            <ng-template #noTaskDescription>
+              <div class="task-description muted">No description added yet.</div>
+            </ng-template>
+
+            <div class="task-tags">
+              <span class="task-tag">{{ task.subTopicName }}</span>
+              <span class="task-tag subtle-tag" *ngIf="task.resourceURL">Resource</span>
+            </div>
+          </div>
+
+          <div class="task-progress">{{ getTopicProgressLabel(task) }}</div>
+          <div class="meta-row">
+            <span class="meta-pill">{{ task.dueDate ? (task.dueDate | date:'MMM d') : 'No due date' }}</span>
+            <span class="meta-pill">{{ task.topicName }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showTaskModal || showCreateModal"></div>
+<div class="modal-panel" *ngIf="showTaskModal && selectedTask">
+  <div class="task-form-read">
+  <!-- Title field row -->
+  <div class="form-group full-width">
+    <label class="form-label">Task Title</label>
+    <div class="form-static-value title-value">{{ selectedTask.taskTitle }}</div>
+  </div>
+
+  <!-- Description field row -->
+  <div class="form-group full-width">
+    <label class="form-label">Description</label>
+    <div class="form-static-value description-value">
+      {{ selectedTask.description || 'No description yet.' }}
+    </div>
+  </div>
+
+  <!-- Two-column grid for meta values -->
+  <div class="form-grid-row">
+    <div class="form-group">
+      <label class="form-label">Topic</label>
+      <div class="form-static-value">{{ selectedTask.topicName }}</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Subtopic</label>
+      <div class="form-static-value">{{ selectedTask.subTopicName }}</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <!-- Added a dynamic class hook if you want status color chips later -->
+      <div class="form-static-value status-badge">{{ selectedTask.taskStatus }}</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Due Date</label>
+      <div class="form-static-value">
+        {{ selectedTask.dueDate ? (selectedTask.dueDate | date:'MMM d, y') : 'No due date' }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Resource</label>
+      <div class="form-static-value">
+        {{ selectedTask.resourceURL || 'No resource added.' }}
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="modal-actions">
+    <span class="text-link" role="button" tabindex="0" (click)="advanceTaskStatus(selectedTask)" (keydown.enter)="advanceTaskStatus(selectedTask)" (keydown.space)="advanceTaskStatus(selectedTask)">
+      {{ getStatusActionLabel(selectedTask) }}
+    </span>
+    <button class="primary-btn" type="button" (click)="showTaskModal=false;openCreateModal(selectedTask)">Edit</button>
+    <button class="danger-btn" type="button" (click)="confirmDeleteTask(selectedTask.taskId)">Delete</button>
+    <button class="secondary-btn" type="button" (click)="showTaskModal=false; selectedTask=undefined">Close</button>
+  </div>
+</div>
+
+<div class="modal-panel" *ngIf="showCreateModal">
+
+<h3>{{ taskForm.taskId ? 'Edit Task' : 'Add Task' }}</h3>
+  
+  <!-- 1. Subtopic Dropdown with validation -->
+  <div class="form-group">
+    <select [(ngModel)]="taskForm.subTopicId" name="subTopicId" required #subTopicRef="ngModel">
+      <option [ngValue]="null">Select a subtopic</option>
+      <option *ngFor="let subtopic of subtopics" [ngValue]="subtopic.subTopicId">
+        {{ subtopic.subTopicName }}
+      </option>
+    </select>
+    <span class="error-text" *ngIf="subTopicRef.touched && !taskForm.subTopicId">
+      Please select a subtopic
+    </span>
+  </div>
+
+  <!-- 2. Task Title Input with validation -->
+  <div class="form-group">
+    <input [(ngModel)]="taskForm.taskTitle" name="taskTitle" required #titleRef="ngModel" placeholder="Task title" />
+    <span class="error-text" *ngIf="titleRef.touched && (!taskForm.taskTitle || !taskForm.taskTitle.trim())">
+      Task title is required
+    </span>
+  </div>
+
+  <textarea [(ngModel)]="taskForm.description" rows="6" placeholder="Description"></textarea>
+  <input [(ngModel)]="taskForm.resourceURL" placeholder="Resource URL" type="url" />
+  <input 
+  #datePicker
+  [(ngModel)]="taskForm.dueDate" 
+  name="dueDate"
+  [type]="inputType" 
+  placeholder="Due Date"
+  (focus)="onFocus()"
+  (blur)="onBlur()" 
+  (click)="datePicker.showPicker()"
+/>
+
+  <div class="modal-actions">
+    <button class="primary-btn" type="button" [disabled]="!taskForm.subTopicId || !taskForm.taskTitle?.trim()"
+    (click)="saveTask()" [disabled]="isSaving">{{ isSaving ? 'Saving...' : 'Save' }}</button>
+    <button class="secondary-btn" type="button" (click)="cancel()">Cancel</button>
+  </div>
+</div>

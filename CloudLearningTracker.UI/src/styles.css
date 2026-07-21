@@ -1,0 +1,121 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #07111f;
+  color: #f5f7fb;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-width: 320px;
+  overflow-x: hidden;
+  background: linear-gradient(135deg, #07111f 0%, #12233d 100%);
+  color: #f5f7fb;
+}
+
+app-root {
+  display: block;
+  min-height: 100vh;
+  width: 100%;
+}
+
+a { color: inherit; text-decoration: none; }
+
+button, input, textarea, select { font: inherit; }
+
+input, textarea, select, .mat-mdc-input-element, .mat-mdc-select-value, .mat-mdc-select-placeholder, .mat-mdc-form-field-label, .mat-mdc-form-field-infix {
+  color: #f5f7fb !important;
+  -webkit-text-fill-color: #f5f7fb !important;
+}
+
+input::placeholder,
+textarea::placeholder,
+.mat-mdc-select-placeholder {
+  color: rgba(245, 247, 251, 0.66) !important;
+  -webkit-text-fill-color: rgba(245, 247, 251, 0.66) !important;
+}
+
+input, textarea, select {
+  background: rgba(8, 18, 35, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  padding: 0.72rem 0.9rem;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #79b8ff;
+  box-shadow: 0 0 0 1px rgba(121, 184, 255, 0.25);
+}
+
+mat-card { border-radius: 20px !important; }
+
+.mdc-text-field__input,
+.mdc-text-field__input::placeholder,
+.mdc-floating-label,
+.mat-mdc-input-element,
+.mat-mdc-form-field-label,
+.mat-mdc-form-field-infix {
+  color: #f5f7fb !important;
+  -webkit-text-fill-color: #f5f7fb !important;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+.mdc-text-field--focused .mdc-notched-outline__leading,
+.mdc-text-field--focused .mdc-notched-outline__notch,
+.mdc-text-field--focused .mdc-notched-outline__trailing {
+  border-color: #79b8ff !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(8, 18, 35, 0.95) inset;
+  -webkit-text-fill-color: #f5f7fb !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.mat-snack-bar-container {
+  color: #ffffff;
+}
+
+.snackbar-success {
+  --mdc-snackbar-container-color: #1e7e34 !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  --mdc-snackbar-label-ink-color: #ffffff !important;
+  --mdc-snackbar-action-color: #ffffff !important;
+}
+
+.snackbar-success .mdc-snackbar__surface,
+.snackbar-success .mat-mdc-snack-bar-container {
+  background-color: #1e7e34 !important;
+  color: #ffffff !important;
+}
+
+.snackbar-error {
+  --mdc-snackbar-container-color: #dc3545 !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  --mdc-snackbar-label-ink-color: #ffffff !important;
+  --mdc-snackbar-action-color: #ffffff !important;
+}
+
+.snackbar-error .mdc-snackbar__surface,
+.snackbar-error .mat-mdc-snack-bar-container {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+}
+
+

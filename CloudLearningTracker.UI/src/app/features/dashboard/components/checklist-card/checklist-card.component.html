@@ -1,0 +1,19 @@
+<div class="checklist-card">
+      <div class="checklist-header">
+        <div>
+          <p class="checklist-title">Daily Cloud Checklist</p>
+          <span class="checklist-subtitle">{{ completedChecklistCount }}/{{ checklistItems.length }} done</span>
+        </div>
+        <span class="checklist-pill" [class.complete]="checklistCompleted">{{ checklistCompleted ? 'Done' : 'Today' }}</span>
+      </div>
+      <ul class="checklist-list">
+        <li class="checklist-item" *ngFor="let item of checklistItems; let i = index" [title]="item.label">
+          <label class="checklist-label">
+            <input type="checkbox" [checked]="item.checked" (change)="toggleChecklistItem(i)" />
+            <span>{{ item.label }}</span>
+          </label>
+        </li>
+      </ul>
+      <p class="checklist-hint" *ngIf="!checklistCompleted">Complete the cloud checklist for today.</p>
+      <p class="checklist-hint success" *ngIf="checklistCompleted">All set — your daily task are completed.</p>
+    </div>

@@ -1,0 +1,109 @@
+.checklist-card{background:rgba(15,23,42,.9);
+    border:1px solid rgba(148,163,184,.2);
+    border-radius:20px;
+    padding:16px;
+    min-width:auto;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    flex-wrap: wrap; 
+    overflow: hidden
+  }
+  
+  .checklist-item{padding:4.56px !important;border-bottom:1px solid rgba(148,163,184,.12)}
+      
+.checklist-header {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  width: 100%;
+  gap: 8px;
+}
+
+.checklist-title {
+  margin: 0 0 4px;
+  color: #f8fafc;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.checklist-subtitle {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.checklist-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: rgba(125, 211, 252, 0.12);
+  color: #7dd3fc;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.checklist-pill.complete {
+  background: rgba(34, 197, 94, 0.16);
+  color: #bbf7d0;
+}
+
+.checklist-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+    width: 100%;
+}
+
+.checklist-item:last-child {
+  border-bottom: 0;
+}
+
+.checklist-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e2e8f0;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+.checklist-label span{
+ white-space: nowrap;
+  /* Step 2: Hide anything that spills out */
+  overflow: hidden;
+  /* Step 3: Add the trailing dots (...) */
+  text-overflow: ellipsis;
+
+}
+.checklist-label span:hover {
+  /* Allows text to wrap naturally to next line */
+  white-space: nowrap;
+  /* Allows hidden text to become visible */
+  overflow: hidden; 
+}
+.checklist-label input {
+  accent-color: #38bdf8;
+}
+
+.checklist-hint {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.checklist-hint.success {
+  color: #bbf7d0;
+}
+
+@media (max-width: 1500px) {
+    .checklist-hint{
+      font-size:.8rem;
+    }
+}

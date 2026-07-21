@@ -1,0 +1,38 @@
+<div class="activity-dashboard-grid">
+  <div class="panel-card">
+    <div class="panel-title">Recent Activity</div>
+    <ul class="activity-list" *ngIf="activities.length; else empty">
+      <li class="activity-item" *ngFor="let activity of activities">
+        <div class="activity-copy">
+          <strong>{{ activity.title }}</strong>
+          <span>{{ activity.detail }}</span>
+        </div>
+        <div class="activity-meta">
+          <span class="activity-tag">{{ activity.tag }}</span>
+          <span>{{ activity.time | date:'MMM d' }}</span>
+        </div>
+      </li>
+    </ul>
+    <ng-template #empty>
+      <p class="empty-state">Your latest task activity will appear here.</p>
+    </ng-template>
+  </div>
+
+  <div class="panel-card insight-card">
+    <div class="panel-title">Today's Achievements</div>
+    <div class="achievement-board" *ngIf="achievements.length; else noAchievements">
+      <div class="achievement-list">
+        <div class="achievement-item" *ngFor="let achievement of achievements">
+          <div class="achievement-badge">✓</div>
+          <div class="achievement-copy">
+            <strong>{{ achievement.title }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noAchievements>
+      <p class="empty-state">No completed wins recorded today yet.</p>
+    </ng-template>
+    <p class="insight-tip">{{ motivationText }}</p>
+  </div>
+</div>

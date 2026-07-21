@@ -1,0 +1,46 @@
+<div class="panel-card notification-panel">
+  <div class="panel-header">
+    <div>
+      <div class="notification-badge">
+        <span class="badge-dot"></span>
+        Notifications
+      </div>
+      <div class="panel-title">Upcoming & Overdue</div>
+    </div>
+    <div class="notification-count" *ngIf="notificationCount > 0">{{ notificationCount }}</div>
+  </div>
+
+  <div class="panel-body">
+    <div class="panel-column">
+      <div class="section-label">Upcoming</div>
+      <div class="task-list" *ngIf="upcomingTasks.length; else upcomingEmpty">
+        <div class="task-item" *ngFor="let task of upcomingTasks">
+          <div class="task-text">
+            <strong>{{ task.taskTitle }}</strong>
+          </div>
+          <div class="due-date">{{ task.dueDate ? (task.dueDate | date:'MMM d') : 'No due date' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-column">
+      <div class="section-label overdue">Overdue</div>
+      <div class="task-list" *ngIf="dueTasks.length; else dueEmpty">
+        <div class="task-item" *ngFor="let task of dueTasks">
+          <div class="task-text">
+            <strong>{{ task.taskTitle }}</strong>
+          </div>
+          <div class="due-days">{{ task.dueDays }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #upcomingEmpty>
+    <p class="empty-state">No upcoming tasks right now.</p>
+  </ng-template>
+
+  <ng-template #dueEmpty>
+    <p class="empty-state">No due tasks right now.</p>
+  </ng-template>
+</div>

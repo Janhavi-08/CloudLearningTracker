@@ -1,0 +1,111 @@
+<div class="notes-shell">
+  <div class="header-stick">
+  <div class="notes-toolbar">
+    <div>
+      <p class="eyebrow">Notes</p>
+      <h1>Learning Notes</h1>
+    </div>
+    <button mat-raised-button color="primary" (click)="openCreateForm()">+ Add Note</button>
+  </div>
+  <div class="notes-controls">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (ngModelChange)="loadNotes()" />
+      <button *ngIf="searchTerm" mat-icon-button matSuffix type="button" aria-label="Clear search" (click)="clearSearch()">
+        ✕
+      </button>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Filter by Topic</mat-label>
+       <mat-select [(ngModel)]="topicFilter" (selectionChange)="filteredNotes()" class="filter-topic">
+        <mat-option value="">All topics</mat-option>
+        <ng-container *ngFor="let option of topicFilterOptions">
+          <mat-option [value]="option.value" [class.subtopic-option]="option.isSubtopic">
+            <span class="option-label" [class.subtopic-label]="option.isSubtopic">{{ option.label }}</span>
+          </mat-option>
+        </ng-container>
+      </mat-select>
+      <button *ngIf="topicFilter" mat-icon-button matSuffix type="button" aria-label="Clear filter" (click)="clearFilter()">
+        ✕
+      </button>
+    </mat-form-field>
+  </div>
+</div>
+<div class="modal-backdrop" *ngIf="showForm" (click)="cancelForm()"></div>
+
+  <div class="modal-backdrop" *ngIf="showViewModal" (click)="closeNoteView()"></div>
+
+  <div class="note-view-modal" *ngIf="showViewModal && selectedViewNote">
+    <div class="note-view-header">
+      <div>
+      <h2>{{ selectedViewNote.noteTitle }}</h2>
+      <div class="note-meta">SubTopic: {{ getSubTopicName(selectedViewNote.subTopicId) }}</div>
+      </div>
+      <button class="secondary-btn" type="button" (click)="closeNoteView()">Close</button>
+    </div>
+    <div class="note-view-content">
+      <div class="note-view-body" [innerHTML]="getSafeHtml(selectedViewNote.content)"></div>
+    </div>
+  </div>
+
+  <div class="note-form-card" *ngIf="showForm">
+    <h2>{{ editingNoteId ? 'Edit Note' : 'Create Note' }}</h2>
+    <form [formGroup]="noteForm" (ngSubmit)="saveNote()">
+            <div class="form-group">
+  <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title</mat-label>
+   <input matInput formControlName="noteTitle" required />
+
+    
+      </mat-form-field>
+<span class="error-text" *ngIf="noteForm.get('noteTitle')?.touched && (!noteForm.get('noteTitle')?.value || !noteForm.get('noteTitle')?.value.trim())">
+          Note topic is required
+        </span>
+         </div>
+      <div class="compact-meta-row">
+        <mat-form-field appearance="outline" class="compact-field">
+          <mat-label>Topic</mat-label>
+          <mat-select formControlName="topicId" (selectionChange)="loadSubTopics($event.value)">
+            <mat-option *ngFor="let t of topics" [value]="t.topicId">{{ t.topicName }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="compact-field">
+          <mat-label>SubTopic</mat-label>
+          <mat-select formControlName="subTopicId">
+            <mat-option *ngFor="let s of subTopics" [value]="s.subTopicId">{{ s.subTopicName }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Content</mat-label>
+        <textarea matInput formControlName="content" rows="7"></textarea>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button class="primary-btn" type="submit">Save</button>
+        <button class="secondary-btn" type="button" (click)="cancelForm()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="notes-grid" *ngIf="visibleNotes.length; else empty">
+    <mat-card class="note-card interactive" *ngFor="let note of visibleNotes" (click)="openNoteView(note)">
+      <div class="note-card-header">
+        <h3>{{ note.noteTitle }}</h3>
+        <div class="actions">
+          <button mat-icon-button color="primary" (click)="$event.stopPropagation(); editNote(note)">✎</button>
+          <button mat-icon-button color="warn" (click)="$event.stopPropagation(); deleteNote(note.noteId)">🗑</button>
+        </div>
+      </div>
+      <p class="note-content-preview" [innerHTML]="getTruncatedContent(note.content)"></p>
+      <div class="note-meta">SubTopic: {{ getSubTopicName(note.subTopicId) }}</div>
+    </mat-card>
+  </div>
+
+  <ng-template #empty>
+    <div class="empty-state">No notes yet. Create your first one.</div>
+  </ng-template>
+</div>

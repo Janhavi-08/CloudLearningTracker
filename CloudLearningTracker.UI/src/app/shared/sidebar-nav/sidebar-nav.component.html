@@ -1,0 +1,38 @@
+<div class="drawer-backdrop" *ngIf="isOpen" (click)="close()"></div>
+
+<div class="sidebar" [class.open]="isOpen">
+  <div class="sidebar-header">
+    <div class="brand">
+      <div class="brand-icon">☁</div>
+      <div class="brand-text">
+        <span class="brand-title">Cloud Learning Tracker</span>
+        <span class="brand-subtitle">Study workspace</span>
+      </div>
+    </div>
+    <button class="close-button" type="button" (click)="close()" aria-label="Close navigation">✕</button>
+  </div>
+
+  <div class="user-card">
+    <div class="avatar">{{ username.charAt(0).toUpperCase() }}</div>
+    <div class="user-info">
+      <span class="user-name">{{ username }}</span>
+      <span class="user-role">Active learner</span>
+    </div>
+  </div>
+
+  <nav class="nav-links">
+    <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="close()">
+      <span class="nav-icon">▣</span>
+      <span class="nav-label">Dashboard</span>
+    </a>
+    <a routerLink="/notes" routerLinkActive="active" (click)="close()">
+      <span class="nav-icon">✎</span>
+      <span class="nav-label">Notes</span>
+    </a>
+  </nav>
+
+  <button class="logout-button" type="button" (click)="logout()">
+    <span class="nav-icon">⇠</span>
+    <span class="nav-label">Logout</span>
+  </button>
+</div>

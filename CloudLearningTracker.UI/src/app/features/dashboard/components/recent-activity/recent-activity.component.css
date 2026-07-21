@@ -1,0 +1,172 @@
+.activity-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  gap: 14px;
+  margin-top: 5px;
+}
+
+.panel-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 12px 30px rgba(2, 8, 23, 0.2);
+}
+
+.panel-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #f8fafc;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.activity-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.activity-list::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.activity-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.activity-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.activity-copy strong {
+  color: #f8fafc;
+  font-size: 0.92rem;
+}
+
+.activity-copy span,
+.activity-meta {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.activity-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.activity-tag {
+  color: #7dd3fc;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.empty-state {
+  color: #94a3b8;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.insight-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.achievement-board {
+  margin-bottom: 12px;
+}
+
+.achievement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 170px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.achievement-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.achievement-list::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+}
+
+.achievement-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(2, 8, 23, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.achievement-badge {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.2);
+  color: #7dd3fc;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.achievement-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.achievement-copy strong {
+  color: #f8fafc;
+  font-size: 0.9rem;
+}
+
+.achievement-copy span {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.insight-tip {
+  margin: 0;
+  color: #7dd3fc;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  margin-top: auto;;
+}
+
+@media (max-width: 900px) {
+  .activity-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
