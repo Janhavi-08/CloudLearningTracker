@@ -1,11 +1,15 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px; 
+  /* can be 4px */
   margin-bottom: 12px;
   width: 100%;
 }
 
+.form-group.full-width {
+  width: 100%;
+}
 .error-text {
   color: #ef4444; /* Clean Red accent */
   font-size: 0.75rem;
@@ -25,7 +29,6 @@ button:disabled {
   padding: 18px;
   box-shadow: 0 12px 30px rgba(2, 8, 23, 0.2);
   min-height: 569px;
-  /*  */
   overflow: hidden; 
 }
 
@@ -45,7 +48,6 @@ button:disabled {
   gap: 12px;
   flex-wrap: wrap;
   flex: 1;
-  /*  */
   min-width: 0;
 }
 
@@ -61,7 +63,7 @@ button:disabled {
   margin-top: 2px;
 }
 
- .primary-btn, .secondary-btn, .danger-btn {
+ .primary-btn, .secondary-btn, .danger-btn, .icon-btn {
   border: 0;
   border-radius: 999px;
   padding: 7px 10px;
@@ -74,23 +76,17 @@ button:disabled {
   background: linear-gradient(90deg, #38bdf8, #818cf8);
   color: #fff;
 }
-
+.danger-btn {
+  background: rgba(248, 113, 113, 0.16);
+  color: #fecaca;
+}
 .secondary-btn {
   background: rgba(148, 163, 184, 0.16);
   color: #f8fafc;
 }
+
 .icon-btn{
-border: 0;
-  border-radius: 999px;
-  padding: 7px 10px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  width: 100px;
-  font-weight: bold;
-}
-.danger-btn {
-  background: rgba(248, 113, 113, 0.16);
-  color: #fecaca;
+  width: 100px !important;
 }
 
 .board {
@@ -107,8 +103,7 @@ border: 0;
   padding: 10px;
   min-height: 220px;
   border: 1px solid transparent;
-  /*  */
-   display: flex;
+  display: flex;
   flex-direction: column;
   min-width: 0;
 }
@@ -181,13 +176,6 @@ border: 0;
   border-radius: 999px;
 }
 
-.scroll-hint {
-  color: #64748b;
-  font-size: 0.72rem;
-  text-align: center;
-  padding: 2px 0 4px;
-}
-
 .task-card {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.9));
   border: 1px solid rgba(148, 163, 184, 0.18);
@@ -200,9 +188,7 @@ border: 0;
   gap: 7px;
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
   box-shadow: 0 8px 18px rgba(2, 8, 23, 0.14);
-  /*  */
   min-width: 0;
-  /* overflow: hidden; */
 }
 
 .column-notStarted .task-card {
@@ -364,13 +350,12 @@ border: 0;
 
 .modal-actions {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
+  justify-content: flex-end;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
   width: 100%;
 }
-
 .modal-actions .text-link {
   margin-right: auto;
 }
@@ -398,14 +383,6 @@ border: 0;
   font-size: 0.85rem;
 }
 
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 4px;
-  width: 100%;
-}
 .task-form-read {
   display: flex;
   flex-direction: column;
@@ -413,29 +390,16 @@ border: 0;
   width: 100%;
 }
 
-/* Individual wrapper for each label + item bundle */
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-group.full-width {
-  width: 100%;
-}
-
-/* Elegant low-contrast label layout mimicking a real input */
 .form-label {
   font-size: 0.82rem;
-  color: #94a3b8; /* Slate gray */
+  color: #94a3b8;  
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-/* Static container mimicking your form field input aesthetics */
 .form-static-value {
-  background: rgba(15, 23, 42, 0.6); /* Slightly dark transparent well */
+  background: rgba(15, 23, 42, 0.6); 
   border: 1px solid rgba(148, 163, 184, 0.15);
   border-radius: 10px;
   padding: 10px 14px;
@@ -447,7 +411,6 @@ border: 0;
   align-items: center;
 }
 
-/* Distinct sizing considerations for titles vs text content blocks */
 .title-value {
   font-size: 1.1rem;
   font-weight: 600;
@@ -457,10 +420,9 @@ border: 0;
 .description-value {
   align-items: flex-start;
   min-height: 80px;
-  white-space: pre-wrap; /* Preserves line breaks if present */
+  white-space: pre-wrap; 
 }
 
-/* Responsive grid grouping row */
 .form-grid-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -474,7 +436,6 @@ border: 0;
   z-index: 100;
 }
 
-/* Make the trigger region function layout act as an interactive hover button anchor block */
 .progress-dropdown-trigger {
   position: relative;
   display: flex;
@@ -495,13 +456,12 @@ border: 0;
 
 .caret-arrow {
   display: inline-block;
-  transform: rotate(180deg); /* Flips ⌃ character down to become a tidy dropdown ⌵ arrowhead */
+  transform: rotate(180deg);
   font-size: 0.9rem;
   font-weight: 500;
   color: #94a3b8;
 }
 
-/* -------------------- SVG Ring Graphics -------------------- */
 .circular-progress {
   position: relative;
   width: 36px;  
@@ -516,7 +476,7 @@ border: 0;
 
 .progress-svg circle {
   fill: none;
-  stroke-width: 12px; /* Thicker styling scale parameters matching your layout image */
+  stroke-width: 12px; 
 }
 
 .bg-circle {
@@ -524,8 +484,8 @@ border: 0;
 }
 
 .fg-circle {
-  stroke: #7dd3fc;/* Soft lavender purple ring tone tracking color matching your image profile */
-  stroke-linecap: round;
+  stroke: #7dd3fc;
+    stroke-linecap: round;
   stroke-dasharray: 264;
   stroke-dashoffset: calc(264 - (264 * var(--progress-percentage)) / 100);
   transition: stroke-dashoffset 300ms ease;
@@ -660,22 +620,20 @@ border: 0;
   font-size: 0.85rem;
 }
 
-/* -------------------- FLOATING POPUP OVERLAY CARD -------------------- */
 .progress-floating-card {
   position: absolute;
-  top: calc(100% + 14px); /* Pushes down past text boundary line thresholds */
+  top: calc(100% + 14px); 
   left: 50%;
   transform: translateX(-50%);
-  background: #cbd5e1; /* Crisp matching off-white solid context surface block */
-  color: #0f172a;      /* Dark slate layout typography elements */
-  border-radius: 14px;
+  background: #cbd5e1;
+    color: #0f172a;    
+     border-radius: 14px;
   padding: 20px;
   width: 300px;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
   z-index: 105;
 }
 
-/* Top center pointing menu alignment arrow block pointer */
 .card-arrow-tip {
   position: absolute;
   top: -6px;
@@ -696,11 +654,10 @@ border: 0;
 .progress-floating-card p {
   margin: 0;
   font-size: 0.9rem;
-  color: #64748b; /* Soft gray description line layout text */
+  color: #64748b;  
   line-height: 1.4;
 }
 
-/* Collapse columns to single stream on small mobile screen targets */
 @media (max-width: 1500px) {
   .progress-label-text {
     display: none;
