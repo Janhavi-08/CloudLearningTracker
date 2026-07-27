@@ -33,16 +33,18 @@ jobs:
       - name: Build API Image
         env:
          IMAGE_TAG: v${{ github.run_number }}
-        run:  docker build -t cloudlearningtracker-api:v${{ IMAGE_TAG }} ./CloudLearningTracker.API
-        run: docker tag cloudlearningtracker-api:v${{ IMAGE_TAG }} 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:v${{ IMAGE_TAG }}
-        run: docker push 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:v${{ IMAGE_TAG }}
+        run: | 
+          docker build -t cloudlearningtracker-api:v${{ IMAGE_TAG }} ./CloudLearningTracker.API
+          docker tag cloudlearningtracker-api:v${{ IMAGE_TAG }} 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:v${{ IMAGE_TAG }}
+          docker push 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:v${{ IMAGE_TAG }}
       
       - name: Build UI Image
         env:
           IMAGE_TAG: v${{ github.run_number }}
-        run:  docker build -t cloudlearningtracker-ui:v${{ IMAGE_TAG }} ./CloudLearningTracker.UI
-        run: docker tag cloudlearningtracker-ui:v${{ IMAGE_TAG }} 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:v${{ IMAGE_TAG }}
-        run: docker push 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:v${{ IMAGE_TAG }}
+        run: |
+          docker build -t cloudlearningtracker-ui:v${{ IMAGE_TAG }} ./CloudLearningTracker.UI
+          docker tag cloudlearningtracker-ui:v${{ IMAGE_TAG }} 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:v${{ IMAGE_TAG }}
+          docker push 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:v${{ IMAGE_TAG }}
 
       - name: List Docker Images
         run: docker images
