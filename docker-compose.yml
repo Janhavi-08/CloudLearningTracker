@@ -13,25 +13,6 @@ services:
       restart: unless-stopped
       networks: 
         - backend
-      healthcheck:
-          test:
-            [
-              "CMD",
-              "/opt/mssql-tools18/bin/sqlcmd",
-              "-S",
-              "localhost",
-              "-U",
-              "sa",
-              "-P",
-              "${MSSQL_SA_PASSWORD}",
-              "-Q",
-              "SELECT 1",
-              "-C"
-            ]
-          interval: 10s
-          timeout: 5s
-          retries: 5
-          start_period: 30s
 
   cloudlearningtracker-api:
       build: 
@@ -43,14 +24,14 @@ services:
       environment:
         ASPNETCORE_URLS: "http://+:8080"
         Jwt__Key: ${Jwt__Key}
-        Cors__AllowedOrigins__0: "http://localhost:4200"
+        Cors__AllowedOrigins__0: ${Cors__AllowedOrigins}
         ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
       depends_on:
-        cloudlearningtracker-db:
-          condition: service_healthy
+        - cloudlearningtracker-db
       networks: 
-          - frontend
-          - backend
+        - frontend
+        - backend
+
 
   cloudlearningtracker-ui:
       build: 
