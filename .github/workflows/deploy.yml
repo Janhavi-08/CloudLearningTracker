@@ -10,41 +10,76 @@ permissions:
   contents: read
 
 jobs:
-  verify-aws:
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+  build-and-push:
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::455303857199:role/GitHubActions-ECR-Push-Role
-          aws-region: ap-south-1
+    # verify-aws:
+    #   runs-on: ubuntu-latest
+      runs-on: ubuntu-latest
 
-      # - name: Verify AWS Identity
-      #   run: aws sts get-caller-identity
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+        - name: Configure AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            role-to-assume: arn:aws:iam::455303857199:role/GitHubActions-ECR-Push-Role
+            aws-region: ap-south-1
 
-      - name: Build API Image
-        env:
-         IMAGE_TAG: v${{ github.run_number }}
-        run: | 
-          docker build -t cloudlearningtracker-api:$IMAGE_TAG ./CloudLearningTracker.API
-          docker tag cloudlearningtracker-api:$IMAGE_TAG 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:$IMAGE_TAG
-          docker push 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:$IMAGE_TAG
+        # - name: Verify AWS Identity
+        #   run: aws sts get-caller-identity
+
+        - name: Login to Amazon ECR
+          id: login-ecr
+          uses: aws-actions/amazon-ecr-login@v2
+
+        - name: Build API Image
+          env:
+            IMAGE_TAG: v${{ github.run_number }}
+          run: | 
+            docker build -t cloudlearningtracker-api:$IMAGE_TAG ./CloudLearningTracker.API
+            docker tag cloudlearningtracker-api:$IMAGE_TAG 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:$IMAGE_TAG
+            docker push 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:$IMAGE_TAG
+        
+        - name: Build UI Image
+          env:
+            IMAGE_TAG: v${{ github.run_number }}
+          run: |
+            docker build -t cloudlearningtracker-ui:$IMAGE_TAG ./CloudLearningTracker.UI
+            docker tag cloudlearningtracker-ui:$IMAGE_TAG 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:$IMAGE_TAG
+            docker push 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:$IMAGE_TAG
+
+        - name: List Docker Images
+          run: docker images
+  deploy:
+
+    needs: build-and-push
+      # verify-aws:
+      #   runs-on: ubuntu-latest
       
-      - name: Build UI Image
-        env:
-          IMAGE_TAG: v${{ github.run_number }}
-        run: |
-          docker build -t cloudlearningtracker-ui:$IMAGE_TAG ./CloudLearningTracker.UI
-          docker tag cloudlearningtracker-ui:$IMAGE_TAG 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:$IMAGE_TAG
-          docker push 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:$IMAGE_TAG
+    runs-on: ubuntu-latest
+    
+    steps:
 
-      - name: List Docker Images
-        run: docker images
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+          script: | 
+            cd ~/CloudLearningTracker
+            
+            aws ecr get-login-password | docker login --username AWS --password-stdin 455303857199.dkr.ecr.ap-south-1.amazonaws.com
+            
+            sed -i "s/API_IMAGE_TAG=.*/API_IMAGE_TAG=${IMAGE_TAG}/" .env
+            sed -i "s/UI_IMAGE_TAG=.*/UI_IMAGE_TAG=${IMAGE_TAG}/" .env
+
+            docker compose pull
+
+            docker compose up -d --remove-orphans
+
+            docker image prune -f
+                      
