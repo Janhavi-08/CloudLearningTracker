@@ -66,12 +66,13 @@ jobs:
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.2.0
+        env:
+            IMAGE_TAG: v${{ github.run_number }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          env:
-              IMAGE_TAG: v${{ github.run_number }}
+          envs: IMAGE_TAG 
           script: | 
        
             cd ~/CloudLearningTracker
