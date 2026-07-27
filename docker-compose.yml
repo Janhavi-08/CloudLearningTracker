@@ -24,13 +24,14 @@ services:
       environment:
         ASPNETCORE_URLS: "http://+:8080"
         Jwt__Key: ${Jwt__Key}
-        Cors__AllowedOrigins__0: "http://localhost:4200"
+        Cors__AllowedOrigins__0: ${Cors__AllowedOrigins}
         ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
       depends_on:
         - cloudlearningtracker-db
       networks: 
         - frontend
         - backend
+
 
   cloudlearningtracker-ui:
       build: 

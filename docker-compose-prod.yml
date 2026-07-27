@@ -13,7 +13,7 @@ services:
       restart: unless-stopped
       networks: 
         - backend
-
+        
   cloudlearningtracker-api:
       image: 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:${API_IMAGE_TAG}
       container_name: cloudlearningtracker-api
@@ -22,7 +22,7 @@ services:
       environment:
         ASPNETCORE_URLS: "http://+:8080"
         Jwt__Key: ${Jwt__Key}
-        Cors__AllowedOrigins__0: "http://localhost:4200"
+        Cors__AllowedOrigins__0: ${Cors__AllowedOrigins}
         ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
       depends_on:
         - cloudlearningtracker-db
@@ -31,7 +31,7 @@ services:
         - backend
 
   cloudlearningtracker-ui:
-      image: 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${UI_IMAGE_TAG}
+      image: <aws-account-id>.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${UI_IMAGE_TAG}
       container_name: cloudlearningtracker-ui
       ports:
         - "4200:80"
