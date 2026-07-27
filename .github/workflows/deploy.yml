@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-
+  # This Job is for Build and push the images to ECR 
   build-and-push:
 
     # verify-aws:
@@ -52,6 +52,8 @@ jobs:
 
         - name: List Docker Images
           run: docker images
+                  
+  # This Job is to run the images and create container 
   deploy:
 
     needs: build-and-push
