@@ -70,8 +70,10 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-
+          env:
+              IMAGE_TAG: v${{ github.run_number }}
           script: | 
+       
             cd ~/CloudLearningTracker
             
             aws ecr get-login-password | docker login --username AWS --password-stdin 455303857199.dkr.ecr.ap-south-1.amazonaws.com
