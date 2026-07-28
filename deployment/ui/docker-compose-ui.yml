@@ -1,0 +1,6 @@
+services:
+  cloudlearningtracker-ui:
+     image: 455303857199.dkr.ecr.eu-north-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${UI_IMAGE_TAG}
+     container_name: cloudlearningtracker-ui
+     ports:
+      - "4200:80"

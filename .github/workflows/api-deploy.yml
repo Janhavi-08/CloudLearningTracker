@@ -1,0 +1,97 @@
+name: Deploy CloudLearningTracker.API
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'CloudLearningTracker.API/**'
+      - '.github/workflows/api-deploy.yml'
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build API Image
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+    outputs:
+      image_tag: ${{ steps.image-tag.outputs.image_tag }}
+    steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+
+        - name: Configure AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            role-to-assume: arn:aws:iam::455303857199:role/GitHubActions-ECR-Push-Role
+            aws-region: eu-north-1
+
+        - name: Login to Amazon ECR
+          id: login-ecr
+          uses: aws-actions/amazon-ecr-login@v2
+
+        - name: Generate Image Tag
+          id: image-tag
+          run: |
+            echo "image_tag=v${GITHUB_RUN_NUMBER}" >> $GITHUB_OUTPUT
+
+        - name: Build UI Image
+          run: |
+            docker build -t cloudlearningtracker-api:${{ steps.image-tag.outputs.image_tag }} ./CloudLearningTracker.API
+            docker tag cloudlearningtracker-api:${{ steps.image-tag.outputs.image_tag }} 455303857199.dkr.ecr.eu-north-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:${{ steps.image-tag.outputs.image_tag }}
+        - name: Push Docker Image
+          run: |
+            docker push 455303857199.dkr.ecr.eu-north-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:${{ steps.image-tag.outputs.image_tag }}
+
+        - name: List Docker Images
+          run: docker images
+
+deploy:
+    name: Deploy API
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+     - name: Configure AWS Credentials
+       uses: aws-actions/configure-aws-credentials@v4
+       with:
+          role-to-assume: arn:aws:iam::455303857199:role/GitHubActions-ECR-Push-Role
+          aws-region: eu-north-1
+
+     - name: Read docker compose
+       id: compose
+       run: |
+        {
+          echo "content<<EOF"
+          cat deployment/api/docker-compose-api.yml
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
+
+     - name: Deploy to Private EC2 using SSM
+       run: |
+        aws ssm send-command \
+          --instance-ids "${{ secrets.API_INSTANCE_ID }}" \
+          --document-name "AWS-RunShellScript" \
+          --parameters commands='[
+            "mkdir -p /home/ec2-user/CloudLearningTracker",
+            "cd /home/ec2-user/CloudLearningTracker",
+            "cat > docker-compose-api.yml <<'\''EOF'\'' 
+            ${{ steps.compose.outputs.content }}
+            EOF",
+            "cat > .env <<'\''EOF'\'' 
+            API_IMAGE_TAG=${{ needs.build.outputs.image_tag }}
+            MSSQL_SA_PASSWORD=${{ secrets.MSSQL_SA_PASSWORD }}
+            ConnectionStrings__DefaultConnection=${{ secrets.DB_CONNECTION_STRING }}
+            Jwt__Key=${{ secrets.JWT_KEY }}
+            Jwt__Issuer=${{ secrets.JWT_ISSUER }}
+            Jwt__Audience=${{ secrets.JWT_AUDIENCE }}
+            Cors__AllowedOrigins=${{ secrets.Cors__AllowedOrigins}}
+            EOF",
+            "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 455303857199.dkr.ecr.eu-north-1.amazonaws.com",
+            "docker compose -f docker-compose-api.yml pull",
+            "docker compose -f docker-compose-api.yml up -d"
+          ]'

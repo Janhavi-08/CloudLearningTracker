@@ -1,0 +1,79 @@
+name: Deploy CloudLearningTracker.UI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'CloudLearningTracker.UI/**'
+      - '.github/workflows/ui-deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  # This Job is for Build and push the images to ECR 
+  build:
+      name: Build UI Image
+      runs-on: ubuntu-latest
+      permissions:
+        id-token: write
+        contents: read
+      outputs:
+        image_tag: ${{ steps.image-tag.outputs.image_tag }}
+
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+
+        - name: Configure AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            role-to-assume: arn:aws:iam::455303857199:role/GitHubActions-ECR-Push-Role
+            aws-region: eu-north-1
+
+        - name: Login to Amazon ECR
+          id: login-ecr
+          uses: aws-actions/amazon-ecr-login@v2
+
+        - name: Generate Image Tag
+          id: image-tag
+          run: |
+            echo "image_tag=v${GITHUB_RUN_NUMBER}" >> $GITHUB_OUTPUT
+
+        - name: Build UI Image
+          run: |
+            docker build -t cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }} ./CloudLearningTracker.UI
+            docker tag cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }} 455303857199.dkr.ecr.eu-north-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }}
+        - name: Push Docker Image
+          run: |
+            docker push 455303857199.dkr.ecr.eu-north-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }}
+
+        - name: List Docker Images
+          run: docker images
+                  
+  # This Job is to run the images and create container 
+  deploy:
+    name: Deploy UI
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Deploy UI to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: | 
+       
+            cd ~/CloudLearningTracker
+            
+            aws ecr get-login-password | docker login --username AWS --password-stdin 455303857199.dkr.ecr.eu-north-1.amazonaws.com
+            
+            sed -i "s/UI_IMAGE_TAG=.*/UI_IMAGE_TAG=${{ needs.build.outputs.image_tag }}/" .env
+
+            docker compose -f docker-compose-ui.yml pull
+            docker compose -f docker-compose-ui.yml up -d
+
+            docker image prune -f 
