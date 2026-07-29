@@ -58,36 +58,39 @@ jobs:
        contents: read
 
       steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-            role-to-assume: arn:aws:iam::455303857199:role/GitHubActions-ECR-Push-Role
-            aws-region: ap-south-1
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+          
+        - name: Configure AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+              role-to-assume: arn:aws:iam::455303857199:role/GitHubActions-ECR-Push-Role
+              aws-region: ap-south-1
 
-      - name: Read docker compose
-        id: compose
-        run: |
-            # Encode the file to base64 so it fits on a single line safely
-            ENCODED_CONTENT=$(base64 -w 0 deployment/api/docker-compose-api.yml)
-            echo "content=$ENCODED_CONTENT" >> "$GITHUB_OUTPUT"
+        - name: Read docker compose
+          id: compose
+          run: |
+              # Encode the file to base64 so it fits on a single line safely
+              ENCODED_CONTENT=$(base64 -w 0 deployment/api/docker-compose-api.yml)
+              echo "content=$ENCODED_CONTENT" >> "$GITHUB_OUTPUT"
 
-      - name: Deploy to Private EC2 using SSM
-        run: |
-          aws ssm send-command --document-name "AWS-RunShellScript" --instance-ids "${{ secrets.API_INSTANCE_ID }}" \
-            --parameters commands='[
-              "mkdir -p /home/ec2-user/CloudLearningTracker",
-              "cd /home/ec2-user/CloudLearningTracker",
-              "cat > docker-compose-api.yml <<'\''EOF'\'' 
-              ${{ steps.compose.outputs.content }}
-              EOF",
-              "cat > .env <<'\''EOF'\'' 
-              API_IMAGE_TAG=${{ needs.build.outputs.image_tag }}
-              MSSQL_SA_PASSWORD=${{ secrets.MSSQL_SA_PASSWORD }}
-              ConnectionStrings__DefaultConnection=${{ secrets.ConnectionStrings__DefaultConnection }}
-              Jwt__Key=${{ secrets.JWT_KEY }}
-              Cors__AllowedOrigins=${{ secrets.Cors__AllowedOrigins}}
-              EOF",
-              "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 455303857199.dkr.ecr.ap-south-1.amazonaws.com",
-              "docker compose -f docker-compose-api.yml pull",
-              "docker compose -f docker-compose-api.yml up -d"
-            ]'
+        - name: Deploy to Private EC2 using SSM
+          run: |
+            aws ssm send-command --document-name "AWS-RunShellScript" --instance-ids "${{ secrets.API_INSTANCE_ID }}" \
+              --parameters commands='[
+                "mkdir -p /home/ec2-user/CloudLearningTracker",
+                "cd /home/ec2-user/CloudLearningTracker",
+                "cat > docker-compose-api.yml <<'\''EOF'\'' 
+                ${{ steps.compose.outputs.content }}
+                EOF",
+                "cat > .env <<'\''EOF'\'' 
+                API_IMAGE_TAG=${{ needs.build.outputs.image_tag }}
+                MSSQL_SA_PASSWORD=${{ secrets.MSSQL_SA_PASSWORD }}
+                ConnectionStrings__DefaultConnection=${{ secrets.ConnectionStrings__DefaultConnection }}
+                Jwt__Key=${{ secrets.JWT_KEY }}
+                Cors__AllowedOrigins=${{ secrets.Cors__AllowedOrigins}}
+                EOF",
+                "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 455303857199.dkr.ecr.ap-south-1.amazonaws.com",
+                "docker compose -f docker-compose-api.yml pull",
+                "docker compose -f docker-compose-api.yml up -d"
+              ]'
