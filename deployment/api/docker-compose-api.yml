@@ -13,7 +13,7 @@ services:
       restart: unless-stopped
         
   cloudlearningtracker-api:
-      image: 455303857199.dkr.ecr.eu-north-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:${API_IMAGE_TAG}
+      image: 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:${API_IMAGE_TAG}
       container_name: cloudlearningtracker-api
       ports:
         - "5168:8080"
