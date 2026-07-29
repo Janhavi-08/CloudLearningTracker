@@ -73,6 +73,8 @@ jobs:
               # Encode the file to base64 so it fits on a single line safely
               ENCODED_CONTENT=$(base64 -w 0 deployment/api/docker-compose-api.yml)
               echo "content=$ENCODED_CONTENT" >> "$GITHUB_OUTPUT"
+              ENCODED_CONTENT_SQL=$(base64 -w 0 CloudLearningTracker.DB/CloudLearningTracker_DB_script.sql)
+              echo "content=$ENCODED_CONTENT_SQL" >> "$GITHUB_OUTPUT"
 
         - name: Deploy to Private EC2 using SSM
           run: |
@@ -86,6 +88,8 @@ jobs:
             # Decode the base64 string directly into your file
             echo "${{ steps.compose.outputs.content }}" | base64 -d > docker-compose-api.yml
 
+            echo "${{ steps.compose.outputs.content }}" | base64 -d > CloudLearningTracker_DB_script.sql
+
             # Write the .env file with secrets
             cat << 'INNER_EOF' > .env
             API_IMAGE_TAG=${{ needs.build.outputs.image_tag }}
@@ -96,7 +100,7 @@ jobs:
             INNER_EOF
 
             # Keep file permissions clean for the ec2-user
-            chown ec2-user:ec2-user docker-compose-api.yml .env
+            chown ec2-user:ec2-user docker-compose-api.yml .env CloudLearningTracker_DB_script.sql
             chmod 600 .env
 
             # Run docker actions as ec2-user to avoid root-owned configuration locks
@@ -109,6 +113,8 @@ jobs:
             docker compose -f /home/ec2-user/CloudLearningTracker/docker-compose-api.yml pull
             docker compose -f /home/ec2-user/CloudLearningTracker/docker-compose-api.yml up -d --remove-orphans
 
+            docker cp CloudLearningTracker_DB_script.sql cloudlearningtracker-db:/tmp/CloudLearningTracker_DB_script.sql
+            docker exec cloudlearningtracker-db /opt/mssql-tools18/bin/sqlcmd  -S localhost  -U sa  -P ${{ secrets.MSSQL_SA_PASSWORD }}  -C  -i /tmp/CloudLearningTracker_DB_script.sql
             DEPLOY_EOF
             EOF
 
