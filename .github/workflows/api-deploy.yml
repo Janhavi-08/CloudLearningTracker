@@ -52,7 +52,7 @@ jobs:
       name: Deploy API
       runs-on: ubuntu-latest
       needs: build
-      
+
       permissions:
        id-token: write
        contents: read
@@ -67,9 +67,9 @@ jobs:
       - name: Read docker compose
         id: compose
         run: |
-            echo "content<<EOF" >> "$GITHUB_OUTPUT"
-            cat deployment/api/docker-compose-api.yml >> "$GITHUB_OUTPUT"
-            echo "EOF" >> "$GITHUB_OUTPUT"
+            # Encode the file to base64 so it fits on a single line safely
+            ENCODED_CONTENT=$(base64 -w 0 deployment/api/docker-compose-api.yml)
+            echo "content=$ENCODED_CONTENT" >> "$GITHUB_OUTPUT"
 
       - name: Deploy to Private EC2 using SSM
         run: |
