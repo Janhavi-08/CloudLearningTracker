@@ -24,3 +24,6 @@ services:
         ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
       depends_on:
         - cloudlearningtracker-db
+
+volumes:
+    db-data:
