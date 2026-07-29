@@ -112,7 +112,7 @@ jobs:
             EOF
 
             # 2. Convert script to a safe JSON payload using jq
-            jq -n --argumentfile cmd ssm-script.sh '{commands: [$cmd]}' > ssm-parameters.json
+            jq -n --rawfile cmd ssm-script.sh '{commands: [$cmd]}' > ssm-parameters.json
 
             # 3. Send command to AWS
             aws ssm send-command \
