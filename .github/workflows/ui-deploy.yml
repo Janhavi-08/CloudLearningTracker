@@ -28,7 +28,7 @@ jobs:
           uses: aws-actions/configure-aws-credentials@v4
           with:
             role-to-assume: arn:aws:iam::455303857199:role/GitHubActions-ECR-Push-Role
-            aws-region: eu-north-1
+            aws-region: ap-south-1
 
         - name: Login to Amazon ECR
           id: login-ecr
@@ -43,8 +43,6 @@ jobs:
           run: |
             docker build -t cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }} ./CloudLearningTracker.UI
             docker tag cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }} 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }}
-        - name: Push Docker Image
-          run: |
             docker push 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }}
 
         - name: List Docker Images
