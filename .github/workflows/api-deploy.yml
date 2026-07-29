@@ -91,7 +91,7 @@ jobs:
             API_IMAGE_TAG=${{ needs.build.outputs.image_tag }}
             MSSQL_SA_PASSWORD=${{ secrets.MSSQL_SA_PASSWORD }}
             ConnectionStrings__DefaultConnection=${{ secrets.ConnectionStrings__DefaultConnection }}
-            Jwt__Key=${{ secrets.JWT_KEY }}
+            Jwt__Key=${{ secrets.Jwt__Key }}
             Cors__AllowedOrigins=${{ secrets.Cors__AllowedOrigins}}
             INNER_EOF
 
@@ -106,8 +106,9 @@ jobs:
             aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 455303857199.dkr.ecr.ap-south-1.amazonaws.com
 
             # Pull new images and restart the stack
-            docker compose -f docker-compose-api.yml pull
-            docker compose -f docker-compose-api.yml up -d --remove-orphans
+            docker compose -f /home/ec2-user/CloudLearningTracker/docker-compose-api.yml pull
+            docker compose -f /home/ec2-user/CloudLearningTracker/docker-compose-api.yml up -d --remove-orphans
+
             DEPLOY_EOF
             EOF
 
