@@ -42,10 +42,10 @@ jobs:
         - name: Build UI Image
           run: |
             docker build -t cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }} ./CloudLearningTracker.UI
-            docker tag cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }} 455303857199.dkr.ecr.eu-north-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }}
+            docker tag cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }} 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }}
         - name: Push Docker Image
           run: |
-            docker push 455303857199.dkr.ecr.eu-north-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }}
+            docker push 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${{ steps.image-tag.outputs.image_tag }}
 
         - name: List Docker Images
           run: docker images
@@ -69,7 +69,7 @@ jobs:
        
             cd ~/CloudLearningTracker
             
-            aws ecr get-login-password | docker login --username AWS --password-stdin 455303857199.dkr.ecr.eu-north-1.amazonaws.com
+            aws ecr get-login-password | docker login --username AWS --password-stdin 455303857199.dkr.ecr.ap-south-1.amazonaws.com
             
             sed -i "s/UI_IMAGE_TAG=.*/UI_IMAGE_TAG=${{ needs.build.outputs.image_tag }}/" .env
 

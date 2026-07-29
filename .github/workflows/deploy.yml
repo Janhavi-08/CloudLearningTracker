@@ -1,4 +1,4 @@
-# name: Deploy CloudLearningTracker
+name: Deploy CloudLearningTracker
 
 # on:
 #   #this was used originally to build enitre project together  
