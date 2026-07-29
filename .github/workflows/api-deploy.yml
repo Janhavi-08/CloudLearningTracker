@@ -103,7 +103,7 @@ jobs:
             sudo -u ec2-user bash << 'DEPLOY_EOF'
             cd /home/ec2-user/CloudLearningTracker
 
-            "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 455303857199.dkr.ecr.ap-south-1.amazonaws.com",
+            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 455303857199.dkr.ecr.ap-south-1.amazonaws.com
 
             # Pull new images and restart the stack
             docker compose -f docker-compose-api.yml pull
