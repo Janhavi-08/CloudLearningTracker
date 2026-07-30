@@ -70,7 +70,7 @@ jobs:
             aws ecr get-login-password | docker login --username AWS --password-stdin 455303857199.dkr.ecr.ap-south-1.amazonaws.com
             
             sed -i "s/UI_IMAGE_TAG=.*/UI_IMAGE_TAG=${{ needs.build.outputs.image_tag }}/" .env
-
+            echo "${{ needs.build.outputs.image_tag }}"
             docker compose -f docker-compose-ui.yml pull
             docker compose -f docker-compose-ui.yml up -d
 
