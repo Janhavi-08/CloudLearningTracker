@@ -1,6 +1,15 @@
 services:
   cloudlearningtracker-ui:
-     image: 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${UI_IMAGE_TAG}
-     container_name: cloudlearningtracker-ui
-     ports:
-      - "4200:80"
+      image: 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${UI_IMAGE_TAG}
+      container_name: cloudlearningtracker-ui
+      ports:
+        - "4200:80"
+      logging:
+        driver: awslogs
+        options:
+          awslogs-region: ap-south-1
+          # create a log group for each project  
+          awslogs-group: CloudLearningTracker/UI
+          awslogs-create-group: "true"
+          # create a log stream for each ec2 instance in the project - currently its static but need to make it dynamic once there are more instance 
+          awslogs-stream: cloudlearningtracker-ui

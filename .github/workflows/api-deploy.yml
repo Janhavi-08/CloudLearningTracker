@@ -9,6 +9,7 @@ on:
     paths:
       - 'CloudLearningTracker.API/**'
       - '.github/workflows/api-deploy.yml'
+      - 'deployment/api/docker-compose-api.yml'
 
   workflow_dispatch:
 
