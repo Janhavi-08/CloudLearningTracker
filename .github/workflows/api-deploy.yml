@@ -90,6 +90,7 @@ jobs:
             echo "${{ steps.compose.outputs.content }}" | base64 -d > docker-compose-api.yml
 
             # Write the .env file with secrets
+            #  If we are using github to store the config and secrete need to pass all these values and need to add those to github as well
             # cat << 'INNER_EOF' > .env
             # API_IMAGE_TAG=${{ needs.build.outputs.image_tag }}
             # ConnectionStrings__DefaultConnection=${{ secrets.ConnectionStrings__DefaultConnection }}

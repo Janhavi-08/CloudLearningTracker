@@ -13,3 +13,13 @@ services:
         # Jwt__Key: ${Jwt__Key}
         # Cors__AllowedOrigins__0: ${Cors__AllowedOrigins}
         # ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      # change to add logs to cloudwatch
+      logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-south-1
+        # create a log group for each project like api, ui 
+        awslogs-group: CloudLearningTracker/API
+        awslogs-create-group: "true"
+        # create a log stream for each ec2 instance in the project 
+        awslogs-stream: "{{.Name}}"
