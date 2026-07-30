@@ -92,7 +92,6 @@ jobs:
             # Write the .env file with secrets
             # cat << 'INNER_EOF' > .env
             # API_IMAGE_TAG=${{ needs.build.outputs.image_tag }}
-            # MSSQL_SA_PASSWORD=${{ secrets.MSSQL_SA_PASSWORD }}
             # ConnectionStrings__DefaultConnection=${{ secrets.ConnectionStrings__DefaultConnection }}
             # Jwt__Key=${{ secrets.Jwt__Key }}
             # Cors__AllowedOrigins=${{ secrets.Cors__AllowedOrigins}}
