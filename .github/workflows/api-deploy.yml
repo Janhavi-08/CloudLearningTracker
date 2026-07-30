@@ -89,7 +89,7 @@ jobs:
             # Decode the base64 string directly into your file
             echo "${{ steps.compose.outputs.content }}" | base64 -d > docker-compose-api.yml
 
-            # # Write the .env file with secrets
+            # Write the .env file with secrets
             # cat << 'INNER_EOF' > .env
             # API_IMAGE_TAG=${{ needs.build.outputs.image_tag }}
             # MSSQL_SA_PASSWORD=${{ secrets.MSSQL_SA_PASSWORD }}
@@ -116,7 +116,6 @@ jobs:
             # Pull new images and restart the stack
             docker compose -f /home/ec2-user/CloudLearningTracker/docker-compose-api.yml pull
             docker compose -f /home/ec2-user/CloudLearningTracker/docker-compose-api.yml up -d --remove-orphans
-            docker image prune -f
             DEPLOY_EOF
             EOF
 
