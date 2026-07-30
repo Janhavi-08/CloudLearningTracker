@@ -1,6 +1,6 @@
 # This is for api and DB deployment in same instance - currently using github to store the secrets
 
-name: Deploy CloudLearningTracker.API
+name: Deploy CloudLearningTracker.API and CloudLearningTracker.DB
 
 on:
   push:

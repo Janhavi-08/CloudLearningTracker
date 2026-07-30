@@ -8,6 +8,14 @@ using System.Text;
 using CloudLearningTracker.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+// checkk evey 5 minutes for new changes in parameter 
+// Here, we are using aws parameters to store the configuration like connection string, jwt key, sql password and cors url
+builder.Configuration.AddSystemsManager(options =>
+{
+    options.Path = "/cloudlearningtracker";
+    options.Optional = false;
+    options.ReloadAfter = TimeSpan.FromMinutes(5);
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
