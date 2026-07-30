@@ -82,7 +82,6 @@ jobs:
             cat << 'EOF' > ssm-script.sh
 
             # Create deployment folder and set correct ownership
-            rm -f /home/ec2-user/CloudLearningTracker
             mkdir -p /home/ec2-user/CloudLearningTracker
             chown -R ec2-user:ec2-user /home/ec2-user/CloudLearningTracker
             cd /home/ec2-user/CloudLearningTracker

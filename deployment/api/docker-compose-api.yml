@@ -8,6 +8,7 @@ services:
         - "5168:8080"
       environment:
         ASPNETCORE_URLS: "http://+:8080"
-        Jwt__Key: ${Jwt__Key}
-        Cors__AllowedOrigins__0: ${Cors__AllowedOrigins}
-        ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+        # since we are not using AWS Parameters we dont need to pass it, if you are using github for configuration then you need to addd these back and make sure the secretes are also added to github 
+        # Jwt__Key: ${Jwt__Key}
+        # Cors__AllowedOrigins__0: ${Cors__AllowedOrigins}
+        # ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
