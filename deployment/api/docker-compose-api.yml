@@ -1,18 +1,7 @@
 services:
-  cloudlearningtracker-db:
-      image: mcr.microsoft.com/mssql/server:2022-latest
-      container_name: cloudlearningtracker-db
-      ports:
-        - "1433:1433"
-      environment:
-        ACCEPT_EULA: "Y"
-        MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
-        MSSQL_PID: "Developer"
-      volumes:
-        - db-data:/var/opt/mssql
-      restart: unless-stopped
         
   cloudlearningtracker-api:
+      # change the URL for ECR images
       image: 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:${API_IMAGE_TAG}
       container_name: cloudlearningtracker-api
       ports:
@@ -22,8 +11,3 @@ services:
         Jwt__Key: ${Jwt__Key}
         Cors__AllowedOrigins__0: ${Cors__AllowedOrigins}
         ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
-      depends_on:
-        - cloudlearningtracker-db
-
-volumes:
-    db-data:

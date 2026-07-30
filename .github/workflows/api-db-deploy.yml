@@ -1,11 +1,13 @@
-# This is for api deployment - currently using github to store the secrets
+# This is for api and DB deployment in same instance - currently using github to store the secrets
 
 name: Deploy CloudLearningTracker.API
 
 on:
   push:
+  # Just making it disable - just making main_new so it will not trigger the deployment - make it main if want to trigger tha changes 
+
     branches:
-      - main
+      - main_New 
     paths:
       - 'CloudLearningTracker.API/**'
       - '.github/workflows/api-deploy.yml'
@@ -75,12 +77,14 @@ jobs:
               # Encode the file to base64 so it fits on a single line safely
               ENCODED_CONTENT=$(base64 -w 0 deployment/api/docker-compose-api.yml)
               echo "content=$ENCODED_CONTENT" >> "$GITHUB_OUTPUT"        
+              # 2. Encode the SQL script (Check this path carefully!)
+              ENCODED_CONTENT_SQL=$(base64 -w 0 cloudLearningTracker.DB/CloudLearningTracker_DB_script.sql)
+              echo "sql_content=$ENCODED_CONTENT_SQL" >> "$GITHUB_OUTPUT"
 
         - name: Deploy to Private EC2 using SSM
           run: |
             # 1. Create the deployment script file
             cat << 'EOF' > ssm-script.sh
-
             # Create deployment folder and set correct ownership
             rm -f /home/ec2-user/CloudLearningTracker
             mkdir -p /home/ec2-user/CloudLearningTracker
@@ -89,6 +93,9 @@ jobs:
 
             # Decode the base64 string directly into your file
             echo "${{ steps.compose.outputs.content }}" | base64 -d > docker-compose-api.yml
+
+            # Decode the SQL script using its UNIQUE output variable identifier
+            echo "${{ steps.compose.outputs.sql_content }}" | base64 -d > CloudLearningTracker_DB_script.sql
 
             # Write the .env file with secrets
             cat << 'INNER_EOF' > .env
@@ -113,6 +120,13 @@ jobs:
             docker compose -f /home/ec2-user/CloudLearningTracker/docker-compose-api.yml pull
             docker compose -f /home/ec2-user/CloudLearningTracker/docker-compose-api.yml up -d --remove-orphans
 
+             # Sleep 15 seconds to give MSSQL container time to start before sending commands
+            sleep 15
+
+            # Copy SQL file inside container and execute database updates
+            docker cp /home/ec2-user/CloudLearningTracker/CloudLearningTracker_DB_script.sql cloudlearningtracker-db:/tmp/CloudLearningTracker_DB_script.sql
+            docker exec cloudlearningtracker-db /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "${{ secrets.MSSQL_SA_PASSWORD }}" -C -i /tmp/CloudLearningTracker_DB_script.sql
+           
             DEPLOY_EOF
             EOF
 

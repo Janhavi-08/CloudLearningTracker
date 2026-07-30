@@ -1,4 +1,3 @@
-# This for running all (UI, API, DB) in same container
 services:
   cloudlearningtracker-db:
       image: mcr.microsoft.com/mssql/server:2022-latest
@@ -12,10 +11,9 @@ services:
       volumes:
         - db-data:/var/opt/mssql
       restart: unless-stopped
-      networks: 
-        - backend
         
   cloudlearningtracker-api:
+      # change the URL for ECR images
       image: 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-api:${API_IMAGE_TAG}
       container_name: cloudlearningtracker-api
       ports:
@@ -27,24 +25,6 @@ services:
         ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
       depends_on:
         - cloudlearningtracker-db
-      networks: 
-        - frontend
-        - backend
-
-  cloudlearningtracker-ui:
-      image: 455303857199.dkr.ecr.ap-south-1.amazonaws.com/cloudlearningtracker/cloudlearningtracker-ui:${UI_IMAGE_TAG}
-      container_name: cloudlearningtracker-ui
-      ports:
-        - "4200:80"
-      depends_on:
-        - cloudlearningtracker-api
-      networks: 
-        - frontend
 
 volumes:
     db-data:
-
-networks:
-  frontend:    
-  backend:
-  
